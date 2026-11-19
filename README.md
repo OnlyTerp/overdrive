@@ -7,7 +7,7 @@
 
 **Zero-dependency multi-agent build orchestrator.** Combine deep architectural thinking, SHA-256 contract freezing, parallel git worktrees, metric ratchets, cloud compute offloading, and safe local self-improvement — from any MCP-compatible coding agent or the built-in Mission Control Studio.
 
-![Overdrive Studio — Build Overview & Causal DAG](docs/studio-overview.png)
+![Overdrive — Think. Lock. Swarm. Ship.](docs/demo.gif)
 
 ---
 
@@ -26,6 +26,10 @@ Overdrive separates **thinking**, **contract locking**, **isolated parallel exec
 5. **Independent Cross-Family Verification & Metric Ratchets (`overdrive_verify`, `overdrive_gate`)** — Audit every lane against `freezeCommit` for contract tampering or out-of-scope edits, evaluate numeric metric ratchets (`OVERDRIVE_METRICS_JSON`, operators `>=`, `<=`, `==`, `delta>=`, `delta<=`, `coverageFloor`), and run coordinator-private holdouts that workers never see.
 6. **Atomic Trial-Merge Integration (`overdrive_integrate`)** — Merge verified branches and seam regions inside an isolated `-integrate` worktree, run release gates and private holdouts, and fast-forward `repoRoot` **only if every check passes** (leaving `repoRoot` completely untouched on any failure).
 7. **Strict-Local Ratcheted RSI (`overdrive_rsi_*`)** — Mine local session history read-only (`privacyMode: "strict_local"`), run the 5-dimension Golden Benchmark (`checks/rsi-benchmark.mjs`), require an executed cross-family model audit (`modelExecuted: true`), and promote only non-regressing sandbox changes with `prePromoteCommit` rollback receipts.
+
+### Mission Control Studio
+
+![Overdrive Studio — Build Overview & Causal DAG](docs/studio-overview.png)
 
 ![Overdrive Studio — System Evolution & Safe Local RSI](docs/studio-evolution.png)
 
