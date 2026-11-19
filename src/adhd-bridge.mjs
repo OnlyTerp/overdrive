@@ -433,6 +433,16 @@ export function planPodTournament({
   if (!resolvedFleet?.harnesses?.devin || resolvedFleet.harnesses.devin.installed) {
     apexPool.push({ backend: "devin", modelId: "swe-2", speedId: "standard", reasoning: "default", family: "devin" });
   }
+  if (apexPool.length === 0) {
+    if (normHarness === "antigravity" || normHarness === "agy") {
+      apexPool.push({ backend: "antigravity", modelId: "gemini-4-carbon", speedId: "standard", reasoning: "high", family: "google" });
+    }
+    apexPool.push(
+      { backend: "claude", modelId: "claude-opus-5-5", speedId: "standard", reasoning: "high", family: "anthropic" },
+      { backend: "codex", modelId: "gpt-6-astra", speedId: "priority", reasoning: "high", family: "openai" },
+      { backend: "devin", modelId: "swe-2", speedId: "standard", reasoning: "default", family: "devin" },
+    );
+  }
   const baseSource = apexPool.length > 0 ? apexPool : catalog;
 
   const apexRoles = [

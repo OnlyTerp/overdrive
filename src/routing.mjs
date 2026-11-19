@@ -130,11 +130,14 @@ export function detectFleet(overrides = {}) {
       ? (overrides.accountPool && overrides.accountPool.summary ? overrides.accountPool : evaluateAccountPool(overrides.accountPool))
       : readAccountPool(overrides.accountPoolOpts || {});
 
+  const harnessOverride = (id, detected) =>
+    overrides[id] !== undefined ? Boolean(overrides[id]) : Boolean(detected);
+
   const harnesses = {
     antigravity: {
       id: "antigravity",
       name: "Antigravity (Carbon / Hydrogen)",
-      installed: Boolean(commandExists("agy") || commandExists("antigravity") || existsSync(path.join(HOME, ".gemini", "config"))),
+      installed: harnessOverride("antigravity", commandExists("agy") || commandExists("antigravity") || existsSync(path.join(HOME, ".gemini", "config"))),
       models: ["gemini-4-carbon", "gemini-4-hydrogen"],
       costTier: "included",
       family: "google",
@@ -142,7 +145,7 @@ export function detectFleet(overrides = {}) {
     claude: {
       id: "claude",
       name: "Claude Code (Opus 5.5 / Fable 2)",
-      installed: Boolean(commandExists("claude", [existsSync(path.join(APPDATA, "Claude/claude-code")) ? path.join(APPDATA, "Claude/claude-code") : null])),
+      installed: harnessOverride("claude", commandExists("claude", [existsSync(path.join(APPDATA, "Claude/claude-code")) ? path.join(APPDATA, "Claude/claude-code") : null])),
       models: ["claude-opus-5-5", "fable-2", "claude-sonnet-5-5"],
       costTier: "included",
       family: "anthropic",
@@ -150,7 +153,7 @@ export function detectFleet(overrides = {}) {
     codex: {
       id: "codex",
       name: "Codex / ChatGPT (Dots/Astra, 6.1 Sol, Terra Max)",
-      installed: codexInstalled,
+      installed: harnessOverride("codex", codexInstalled),
       models: ["gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-terra"],
       costTier: "free-dots-then-included",
       family: "openai",
@@ -158,7 +161,7 @@ export function detectFleet(overrides = {}) {
     devin: {
       id: "devin",
       name: "Devin CLI (swe-2, swe-2-flash FREE)",
-      installed: Boolean(commandExists("devin")),
+      installed: harnessOverride("devin", commandExists("devin")),
       models: ["swe-2-flash", "swe-2", "swe-2-lightning"],
       costTier: "free-swe2",
       family: "devin",
@@ -166,7 +169,7 @@ export function detectFleet(overrides = {}) {
     muse: {
       id: "muse",
       name: "Muse Code / Muse AI (high weekly quota)",
-      installed: Boolean(commandExists("muse", [win ? path.join(LOCAL_APPDATA, "Programs/muse") : null])),
+      installed: harnessOverride("muse", commandExists("muse", [win ? path.join(LOCAL_APPDATA, "Programs/muse") : null])),
       models: ["muse", "muse-ai"],
       costTier: "included-high-quota",
       family: "muse",
@@ -174,7 +177,7 @@ export function detectFleet(overrides = {}) {
     cursor: {
       id: "cursor",
       name: "Cursor",
-      installed: Boolean(commandExists("cursor") || existsSync(path.join(HOME, ".cursor"))),
+      installed: harnessOverride("cursor", commandExists("cursor") || existsSync(path.join(HOME, ".cursor"))),
       models: ["default"],
       costTier: "included",
       family: "cursor",
@@ -182,7 +185,7 @@ export function detectFleet(overrides = {}) {
     grok: {
       id: "grok",
       name: "Grok CLI / Grokbot (X search)",
-      installed: Boolean(commandExists("grok")),
+      installed: harnessOverride("grok", commandExists("grok")),
       models: ["grok"],
       costTier: "included",
       family: "grok",
@@ -190,7 +193,7 @@ export function detectFleet(overrides = {}) {
     qwen: {
       id: "qwen",
       name: "Qwen Code (Qwen 4 Max)",
-      installed: Boolean(commandExists("qwen") || existsSync(path.join(HOME, ".qwen"))),
+      installed: harnessOverride("qwen", commandExists("qwen") || existsSync(path.join(HOME, ".qwen"))),
       models: ["qwen-4-max"],
       costTier: "included",
       family: "qwen",
@@ -198,7 +201,7 @@ export function detectFleet(overrides = {}) {
     opencode: {
       id: "opencode",
       name: "OpenCode",
-      installed: Boolean(commandExists("opencode") || existsSync(path.join(HOME, ".config", "opencode"))),
+      installed: harnessOverride("opencode", commandExists("opencode") || existsSync(path.join(HOME, ".config", "opencode"))),
       models: ["default"],
       costTier: "included",
       family: "opencode",
@@ -206,7 +209,7 @@ export function detectFleet(overrides = {}) {
     hermes: {
       id: "hermes",
       name: "Hermes Agent",
-      installed: Boolean(commandExists("hermes")),
+      installed: harnessOverride("hermes", commandExists("hermes")),
       models: ["default"],
       costTier: "included",
       family: "hermes",
@@ -214,7 +217,7 @@ export function detectFleet(overrides = {}) {
     "claude-desktop": {
       id: "claude-desktop",
       name: "Claude Desktop",
-      installed: Boolean(existsSync(path.join(APPDATA, "Claude"))),
+      installed: harnessOverride("claude-desktop", existsSync(path.join(APPDATA, "Claude"))),
       models: ["claude-opus-5-5"],
       costTier: "included",
       family: "anthropic",

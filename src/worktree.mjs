@@ -9,6 +9,7 @@ import {
   rmdirSync,
   statSync,
   symlinkSync,
+  unlinkSync,
 } from "node:fs";
 import path from "node:path";
 import { runWithCompute } from "./compute.mjs";
@@ -111,7 +112,19 @@ export function unmountJunctionSafe(junctionPath) {
     if (err?.code !== "ENOENT") throw err;
   }
 
-  rmdirSync(resolved);
+  if (process.platform === "win32") {
+    try {
+      rmdirSync(resolved);
+    } catch (err) {
+      if (err?.code === "ENOTDIR") {
+        unlinkSync(resolved);
+      } else if (err?.code !== "ENOENT") {
+        throw err;
+      }
+    }
+  } else {
+    unlinkSync(resolved);
+  }
   return { unmounted: true, path: resolved.replaceAll("\\", "/") };
 }
 

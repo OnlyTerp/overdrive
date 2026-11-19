@@ -297,7 +297,8 @@ describe("v0.3.0 ratchet extraction, evaluation & private holdout isolation", ()
     assert.equal(brief.includes("secret_holdout_check"), false);
     assert.equal(brief.includes("holdoutCmd"), false);
     assert.match(brief, /holdoutConfigured/);
-    assert.match(brief, /U:\/scratch/);
+    assert.ok(brief.includes(scratchBase.replaceAll("\\", "/")), "brief must include configured scratch workspace");
+    assert.match(brief, /isolated per lane/);
 
     // Verify laneScratchEnv paths & METRIC_REGRESSION fail-closed on exitCode === 0
     const ver = auditAndVerifyLane(store, m.id, "core", {
