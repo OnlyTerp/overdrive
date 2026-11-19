@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="overdrive-token" content="">
+  <link rel="icon" href="data:,">
+  <title>Overdrive · Build Studio</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/review.css">
+</head>
+<body>
+  <a class="od-skip-link" href="#workspace-main">Skip to workspace</a>
+
+  <div class="od-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <div id="od-shell" class="od-shell od-app">
+    <header class="od-topbar od-glass" role="banner">
+      <div class="od-brand">
+        <span class="od-logo" aria-hidden="true">o</span>
+        <span class="od-brand-name">OVERDRIVE</span>
+        <span class="od-crumb" id="mission-crumb">Build studio</span>
+        <select id="mission-select" class="od-select od-top-select" aria-label="Active build"></select>
+      </div>
+
+      <div class="od-top-center">
+        <span class="od-pill" id="state-pill" data-tone="idle">
+          <i class="od-pill-dot" id="state-dot" aria-hidden="true"></i>
+          <span id="state-text">Ready</span>
+        </span>
+      </div>
+
+      <div class="od-top-actions">
+        <button type="button" class="od-ghost-btn" id="btn-new-mission">+ New build</button>
+        <button type="button" class="od-ghost-btn" id="btn-showcase">Sample build</button>
+        <button type="button" class="od-ghost-btn" id="btn-open-palette" aria-label="Search commands and builds">
+          <span>Search</span>
+          <kbd class="od-kbd">Ctrl+K</kbd>
+        </button>
+        <button type="button" class="od-icon-btn" id="btn-theme" title="Switch light or dark theme" aria-label="Switch light or dark theme">
+          <svg class="od-theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>
+          </svg>
+          <svg class="od-theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+          </svg>
+        </button>
+        <button type="button" class="od-ghost-btn" id="btn-shortcuts" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">Shortcuts</button>
+      </div>
+    </header>
+
+    <div id="token-box" class="od-banner od-glass od-token-banner" hidden>
+      <span class="od-muted">Enter your studio access token (or open the launch link containing <code class="od-mono">#t=...</code>):</span>
+      <input id="token-input" class="od-input" type="password" placeholder="Paste access token..." aria-label="Overdrive studio access token">
+      <button type="button" class="od-btn od-btn-primary" id="btn-save-token">Unlock studio</button>
+    </div>
+
+    <div id="armed-banner" class="od-banner od-glass od-armed-banner" hidden role="alert">
+      <span id="armed-text">Ready to proceed</span>
+      <div class="od-btn-row">
+        <button type="button" class="od-btn od-btn-primary" id="btn-armed-confirm">Confirm (Enter)</button>
+        <button type="button" class="od-btn od-btn-ghost" id="btn-armed-cancel">Cancel (Esc)</button>
+      </div>
+    </div>
+
+    <div class="od-main-grid" id="main-grid">
+      <aside id="mission-rail" class="od-rail od-side" aria-label="Goal and team">
+        <section class="od-card od-glass od-goal-card" aria-label="Build goal">
+          <div class="od-card-label">
+            <span>Goal</span>
+            <span class="od-count od-num" id="rail-missions-count">0</span>
+          </div>
+          <p class="od-goal-prose" id="rail-goal-text">Turn deep thinking into coordinated, conflict-free software builds.</p>
+          <div class="od-objective-foot">
+            <button type="button" class="od-primary" id="btn-rail-cta">Explore sample build <span aria-hidden="true">↗</span></button>
+          </div>
+          <ul id="rail-missions-list" class="od-rail-list"></ul>
+        </section>
+
+        <section class="od-card od-glass od-team-card" aria-label="The team">
+          <div class="od-card-label">
+            <span>The team</span>
+            <span class="od-count od-num" id="rail-lanes-count">0</span>
+          </div>
+          <div id="rail-lanes-list" class="od-team-list"></div>
+          <p class="od-boundary">Each teammate works in an isolated copy on separate files, so nobody overwrites anyone else's work.</p>
+        </section>
+      </aside>
+
+      <main id="workspace-main" class="od-center od-document od-glass" tabindex="-1" aria-label="Build workspace">
+        <div class="od-doc-toolbar">
+          <div class="od-doc-tab" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 3h9l4 4v14H6z"/>
+              <path d="M14 3v5h5"/>
+            </svg>
+            <span>Build notebook</span>
+          </div>
+
+          <div class="od-doc-tabs" role="tablist" aria-label="Studio views">
+            <button type="button" class="od-tab is-active" data-view-tab="graph" role="tab" aria-selected="true">Overview</button>
+            <button type="button" class="od-tab" data-view-tab="files" role="tab" aria-selected="false">Changes</button>
+            <button type="button" class="od-tab" data-view-tab="timeline" role="tab" aria-selected="false">Activity</button>
+            <button type="button" class="od-tab" data-nav-view="adhd" role="tab" aria-selected="false">Research</button>
+            <button type="button" class="od-tab" data-nav-view="contracts" role="tab" aria-selected="false">Setup</button>
+            <button type="button" class="od-tab" data-nav-view="composer" role="tab" aria-selected="false">Plan</button>
+            <button type="button" class="od-tab" data-nav-view="rsi" role="tab" aria-selected="false">Evolution</button>
+          </div>
+
+          <div class="od-doc-actions">
+            <button type="button" class="od-ghost-btn od-btn-xs" id="btn-rail-toggle" title="Toggle Goal & Team ([)" aria-label="Toggle Goal and Team">Team</button>
+            <button type="button" class="od-ghost-btn od-btn-xs" id="btn-timeline-toggle" title="Toggle Activity (t)" aria-label="Toggle Activity">Activity</button>
+            <button type="button" class="od-ghost-btn od-btn-xs" id="btn-inspector-toggle" title="Toggle Summary & Changes (])" aria-label="Toggle Inspector">Details</button>
+          </div>
+        </div>
+
+        <div class="od-paper" id="paper" tabindex="0">
+          <section id="panel-map" class="od-panel is-active">
+            <div class="od-pane">
+              <div class="od-paper-meta">
+                <span id="paper-meta-kind">Build overview</span>
+                <span id="paper-meta-status" class="od-num">Ready</span>
+              </div>
+              <h1 id="map-title" class="od-doc-title">Turn deep thinking into finished software.</h1>
+              <p id="map-goal" class="od-lede">Your build plan, isolated teammates, verified edits, and release checks appear here as a calm, reviewable workspace.</p>
+
+              <div class="od-build-controls" id="build-controls">
+                <label class="od-inline-field">
+                  <span class="od-muted">Team routing</span>
+                  <select id="quick-mode" class="od-select" aria-label="Team routing mode">
+                    <option value="single-harness">Single app</option>
+                    <option value="playbook-auto">Smart auto-fleet</option>
+                    <option value="mix-and-match">Custom mix</option>
+                  </select>
+                </label>
+                <div class="od-btn-row">
+                  <button type="button" class="od-btn od-btn-primary" id="btn-freeze">Lock rules &amp; start team</button>
+                  <button type="button" class="od-btn od-btn-ghost" id="btn-run-all-gates">Run checks</button>
+                  <button type="button" class="od-btn od-btn-ghost" id="btn-integrate">Trial merge &amp; check</button>
+                  <button type="button" class="od-btn od-btn-ghost" id="btn-cleanup">Clean up copies</button>
+                </div>
+              </div>
+
+              <div id="routing-warnings-banner" class="od-banner is-warn od-mt-sm" role="status" hidden></div>
+
+              <div class="od-doc-rule"></div>
+
+              <section id="stage-stepper" class="od-stepper" aria-label="Build progress steps">
+                <div class="od-step" data-stage="thinking">
+                  <span class="od-step-num od-num">1</span>
+                  <div class="od-step-body"><b>Think</b><small id="st-think">Deep research</small></div>
+                </div>
+                <span class="od-step-sep" aria-hidden="true">→</span>
+                <div class="od-step" data-stage="planned">
+                  <span class="od-step-num od-num">2</span>
+                  <div class="od-step-body"><b>Plan</b><small id="st-plan">Separate files</small></div>
+                </div>
+                <span class="od-step-sep" aria-hidden="true">→</span>
+                <div class="od-step" data-stage="frozen">
+                  <span class="od-step-num od-num">3</span>
+                  <div class="od-step-body"><b>Lock rules</b><small id="st-freeze">Shared contracts</small></div>
+                </div>
+                <span class="od-step-sep" aria-hidden="true">→</span>
+                <div class="od-step" data-stage="swarming">
+                  <span class="od-step-num od-num">4</span>
+                  <div class="od-step-body"><b>Build</b><small id="st-swarm">0/0 verified</small></div>
+                </div>
+                <span class="od-step-sep" aria-hidden="true">→</span>
+                <div class="od-step" data-stage="completed">
+                  <span class="od-step-num od-num">5</span>
+                  <div class="od-step-body"><b>Final checks</b><small id="st-gates">0/0 passed</small></div>
+                </div>
+              </section>
+
+              <div id="dag-root"></div>
+            </div>
+          </section>
+
+          <section id="panel-contracts" class="od-panel" hidden>
+            <div class="od-pane">
+              <div class="od-panel-head">
+                <h2>Setup, shared rules &amp; checks</h2>
+                <p>Manage the shared files nobody is allowed to alter, review final release checks, and see which AI coding apps are ready on this machine.</p>
+              </div>
+
+              <div class="od-two-col">
+                <div class="od-glass-inset">
+                  <div class="od-card-head">
+                    <h3>Shared rules</h3>
+                    <span class="od-badge od-num" id="freeze-commit-tag">Not locked</span>
+                  </div>
+                  <ul class="od-list" id="contracts-list"></ul>
+                </div>
+                <div class="od-glass-inset">
+                  <div class="od-card-head">
+                    <h3>Release checks</h3>
+                    <span class="od-badge od-num" id="gates-summary-tag">0 / 0</span>
+                  </div>
+                  <ul class="od-list" id="gates-list"></ul>
+                </div>
+              </div>
+
+              <div class="od-glass-inset od-mt-md">
+                <div class="od-card-head">
+                  <h3>Connected AI apps</h3>
+                  <button type="button" class="od-btn od-btn-primary" id="btn-preview-install">Preview app setup</button>
+                </div>
+                <div id="fleet-degraded-note" class="od-banner is-warn od-mt-sm" role="status" hidden></div>
+                <div class="od-fleet-grid" id="fleet-grid"></div>
+                <details class="od-details od-mt-md">
+                  <summary>Advanced: Manual MCP setup</summary>
+                  <div class="od-two-col od-mt-sm">
+                    <div>
+                      <h4>Stdio MCP configuration</h4>
+                      <pre id="manual-mcp-pre" class="od-code-box"></pre>
+                    </div>
+                    <div>
+                      <h4>Installer dry-run preview</h4>
+                      <ul class="od-list" id="install-preview-list"></ul>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </section>
+
+          <section id="panel-adhd" class="od-panel" hidden>
+            <div class="od-pane">
+              <div class="od-panel-head">
+                <h2>Research notes &amp; escalation</h2>
+                <p>Link an ADHD deep-thinking notebook to guide this build, or send a structured failure note back for fresh reasoning.</p>
+              </div>
+              <div class="od-btn-row">
+                <button type="button" class="od-btn od-btn-ghost" id="btn-refresh-adhd">Refresh notebooks</button>
+                <button type="button" class="od-btn od-btn-primary" id="btn-build-escalation">Prepare failure note</button>
+              </div>
+              <div class="od-two-col od-mt-md">
+                <div class="od-glass-inset">
+                  <div class="od-card-head">
+                    <h3>Saved research notebooks</h3>
+                    <span class="od-badge" id="adhd-dir-tag">—</span>
+                  </div>
+                  <ul class="od-list" id="adhd-sessions-list"></ul>
+                </div>
+                <div class="od-glass-inset">
+                  <div class="od-card-head">
+                    <h3>Notebook excerpt &amp; review note</h3>
+                    <span class="od-badge" id="adhd-detail-tag">Choose a notebook</span>
+                  </div>
+                  <pre id="adhd-detail-pre" class="od-code-box"></pre>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="panel-rsi" class="od-panel" hidden>
+            <div class="od-pane" id="rsi-root"></div>
+          </section>
+
+          <section id="timeline-dock" class="od-timeline-dock" aria-label="Activity and replay">
+            <div class="od-dock-head">
+              <div class="od-dock-title">
+                <span>Activity &amp; replay</span>
+                <span class="od-count od-num" id="events-count">0</span>
+              </div>
+              <button type="button" class="od-ghost-btn od-btn-xs" id="btn-timeline-close" aria-label="Hide activity">Hide</button>
+            </div>
+            <div id="timeline-root"></div>
+          </section>
+        </div>
+
+        <div class="od-doc-bottom">
+          <span class="od-stream">
+            <i id="stream-light" aria-hidden="true"></i>
+            <span id="stream-state" role="status" aria-live="polite" aria-atomic="true">Ready</span>
+          </span>
+          <span id="build-footer-summary" class="od-num">0 teammates · 0 checks</span>
+        </div>
+      </main>
+
+      <aside class="od-right-col" aria-label="Build summary and teammate details">
+        <section class="od-card od-glass od-summary-card" aria-label="Build summary">
+          <div class="od-card-label">Build summary</div>
+          <div class="od-clock od-num" id="summary-clock">—</div>
+          <div class="od-clock-caption" id="summary-caption">No active build</div>
+          <div id="summary-progress-host" class="od-progress-wrap"></div>
+          <dl class="od-summary-facts" id="summary-facts">
+            <div><dt>Teammates</dt><dd id="fact-team" class="od-num">0</dd></div>
+            <div><dt>File conflicts</dt><dd id="fact-conflicts">None</dd></div>
+            <div><dt>Shared rules</dt><dd id="fact-rules" class="od-num">0</dd></div>
+            <div><dt>Release checks</dt><dd id="fact-checks" class="od-num">0 of 0</dd></div>
+          </dl>
+        </section>
+
+        <section id="inspector-drawer" class="od-card od-glass od-inspector" aria-label="Teammate changes and details">
+          <div class="od-inspector-head">
+            <span class="od-inspector-title" id="inspector-header-title">Teammate details</span>
+            <div class="od-btn-row">
+              <button type="button" class="od-ghost-btn od-btn-xs" id="btn-inspector-wide" title="Expand panel (w)">Expand</button>
+              <button type="button" class="od-ghost-btn od-btn-xs" id="btn-inspector-close" title="Close panel (])">Close</button>
+            </div>
+          </div>
+          <div id="inspector-root" class="od-inspector-body"></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <section id="composer-slot" class="od-composer-overlay" hidden role="dialog" aria-modal="true" aria-label="Build and plan composer"></section>
+  <div id="palette-root" class="od-palette-bg" hidden role="dialog" aria-modal="true" aria-label="Command search"></div>
+  <div id="shortcuts-root" class="od-modal-bg" hidden role="dialog" aria-modal="true" aria-label="Keyboard shortcuts"></div>
+  <div id="toast-stack" class="od-toast-stack" role="status" aria-live="polite" aria-atomic="false"></div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

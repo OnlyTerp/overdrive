@@ -1,0 +1,29 @@
+name: Overdrive CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Node 24 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      OVERDRIVE_IGNORE_USER_CONFIG: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "Overdrive CI"
+          git config --global user.email "ci@example.com"
+          git config --global init.defaultBranch main
+      - run: node --test test/*.test.mjs checks/ui-security.mjs checks/studio-api.mjs checks/rsi-benchmark.mjs

@@ -1,0 +1,53 @@
+{
+  "name": "overdrive",
+  "version": "0.3.1",
+  "description": "Zero-dependency multi-agent build orchestrator: Pod-Tournament deep thinking, SHA-256 contract freeze, parallel git worktrees, metric ratchets, and safe local RSI.",
+  "mcpName": "io.github.OnlyTerp/overdrive",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {},
+  "bin": {
+    "overdrive": "./bin/overdrive.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OnlyTerp/overdrive.git"
+  },
+  "homepage": "https://github.com/OnlyTerp/overdrive#readme",
+  "bugs": {
+    "url": "https://github.com/OnlyTerp/overdrive/issues"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "multi-agent",
+    "ai-agents",
+    "git-worktree",
+    "orchestration",
+    "claude-code",
+    "codex",
+    "devin",
+    "antigravity",
+    "self-improvement"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "studio": "node bin/overdrive.mjs studio",
+    "mcp": "node bin/overdrive.mjs mcp",
+    "doctor": "node bin/overdrive.mjs doctor",
+    "benchmark": "node --test checks/rsi-benchmark.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "ui",
+    "skills",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ]
+}
